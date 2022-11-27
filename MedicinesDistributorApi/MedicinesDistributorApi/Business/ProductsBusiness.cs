@@ -10,11 +10,14 @@ namespace MedicinesDistributorApi.Business
     {
         private readonly IMapper _mapper;
         private readonly IProductsRepository _productsRepository;
+        private readonly IMeasurementUnitsRepository _measurementUnitsRepository;
 
-        public ProductsBusiness(IMapper mapper, IProductsRepository productsRepository)
+        public ProductsBusiness(IMapper mapper, IProductsRepository productsRepository,
+            IMeasurementUnitsRepository measurementUnitsRepository)
         {
             _mapper = mapper;
             _productsRepository = productsRepository;
+            _measurementUnitsRepository = measurementUnitsRepository;
         }
 
         public async Task<ProductDto> CreateNewProduct(ProductDto productDto)
@@ -25,7 +28,7 @@ namespace MedicinesDistributorApi.Business
                 product.CreationDate = DateTime.Now;
                 product.LastUpdated = product.CreationDate;
                 await _productsRepository.CreateAsync(product);
-                return _mapper.Map<Product, ProductDto>(product); ;
+                return _mapper.Map<Product, ProductDto>(product);
             }
             catch (Exception)
             {
@@ -39,7 +42,7 @@ namespace MedicinesDistributorApi.Business
             {
                 var product = _mapper.Map<ProductDto, Product>(productDto);
                 product.LastUpdated = DateTime.Now;
-                await _productsRepository.UpdateAsync(productDto.Id,  product);
+                await _productsRepository.UpdateAsync(productDto.Id, product);
                 return _mapper.Map<Product, ProductDto>(product); ;
             }
             catch (Exception)
@@ -54,9 +57,23 @@ namespace MedicinesDistributorApi.Business
             {
                 var product = await _productsRepository.GetAsync(id);
                 if (product != null)
-                    return _mapper.Map<Product, ProductDto>(product);
+                {
+                    var productDto = _mapper.Map<Product, ProductDto>(product);
+                    var measurementUnit = await _measurementUnitsRepository.GetAsync(product.MeasurementUnitId);
+                    if(measurementUnit != null)
+                    {
+                        foreach(var concentration in productDto.SelectedDrugsConcentrations)
+                        {
+                            concentration.ConcentrationDescription = 
+                                $"{concentration.ConcentrationValue} {measurementUnit.MeasurementUnitDescription}";
+                        }
+                    }
+                    return productDto;
+                }
                 else
+                {
                     return null;
+                }
             }
             catch (Exception)
             {
@@ -69,7 +86,22 @@ namespace MedicinesDistributorApi.Business
             try
             {
                 var products = await _productsRepository.GetByNameAsync(partialName);
-                return _mapper.Map<List<Product>, List<ProductDto>>(products); ;
+                var productsDtos = new List<ProductDto>();
+                foreach(var product in products)
+                {
+                    var productDto = _mapper.Map<Product, ProductDto>(product);
+                    var measurementUnit = await _measurementUnitsRepository.GetAsync(product.MeasurementUnitId);
+                    if (measurementUnit != null)
+                    {
+                        foreach (var concentration in productDto.SelectedDrugsConcentrations)
+                        {
+                            concentration.ConcentrationDescription =
+                                $"{concentration.ConcentrationValue} {measurementUnit.MeasurementUnitDescription}";
+                        }
+                    }
+                    productsDtos.Add(productDto);
+                }
+                return productsDtos;
             }
             catch (Exception)
             {
@@ -82,7 +114,22 @@ namespace MedicinesDistributorApi.Business
             try
             {
                 var products = await _productsRepository.GetAsync();
-                return _mapper.Map<List<Product>, List<ProductDto>>(products); ;
+                var productsDtos = new List<ProductDto>();
+                foreach (var product in products)
+                {
+                    var productDto = _mapper.Map<Product, ProductDto>(product);
+                    var measurementUnit = await _measurementUnitsRepository.GetAsync(product.MeasurementUnitId);
+                    if (measurementUnit != null)
+                    {
+                        foreach (var concentration in productDto.SelectedDrugsConcentrations)
+                        {
+                            concentration.ConcentrationDescription =
+                                $"{concentration.ConcentrationValue} {measurementUnit.MeasurementUnitDescription}";
+                        }
+                    }
+                    productsDtos.Add(productDto);
+                }
+                return productsDtos;
             }
             catch (Exception)
             {

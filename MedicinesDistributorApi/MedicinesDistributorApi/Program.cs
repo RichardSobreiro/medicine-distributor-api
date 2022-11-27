@@ -6,6 +6,15 @@ using MedicinesDistributorApi.Repository.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowSites",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7226").AllowAnyHeader().AllowAnyMethod();
+        });
+});
+
 builder.Services.Configure<MedicineDistributorDatabaseSettings>(
     builder.Configuration.GetSection("MedicineDistributorDatabase"));
 
@@ -17,7 +26,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IProductsBusiness, ProductsBusiness>();
+builder.Services.AddScoped<IMeasurementUnitsBusiness, MeasurementUnitsBusiness>();
+
 builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
+builder.Services.AddScoped<IMeasurementUnitsRepository, MeasurementUnitsRepository>();
 
 var app = builder.Build();
 
@@ -29,6 +41,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowSites");
 
 app.UseAuthorization();
 

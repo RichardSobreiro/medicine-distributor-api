@@ -2,7 +2,7 @@
 
 namespace MedicinesDistributorApi.Repository.IRepository
 {
-    public interface IMeasurementUnitRepository
+    public interface IMeasurementUnitsRepository
     {
         Task CreateAsync(MeasurementUnit product);
         Task UpdateAsync(string id, MeasurementUnit measurementUnit);

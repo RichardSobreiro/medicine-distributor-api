@@ -36,8 +36,6 @@ namespace MedicinesDistributorApi.Repository
 
         public async Task<List<Product>> GetByNameAsync(string partialName)
         {
-            //$"/^{partialName}$/i"
-            ///.*dipiron.*/mig
             var filter = Builders<Product>.Filter.Regex("Name", new BsonRegularExpression($"/.*{partialName}.*/mi"));
             return await _productsCollection.Find(filter).ToListAsync();
         }

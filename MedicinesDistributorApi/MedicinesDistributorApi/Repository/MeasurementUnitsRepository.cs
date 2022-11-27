@@ -6,11 +6,11 @@ using MongoDB.Driver;
 
 namespace MedicinesDistributorApi.Repository
 {
-    public class MeasurementUnitRepository : IMeasurementUnitRepository
+    public class MeasurementUnitsRepository : IMeasurementUnitsRepository
     {
         private readonly IMongoCollection<MeasurementUnit> _measurementUnitsCollection;
 
-        public MeasurementUnitRepository(
+        public MeasurementUnitsRepository(
             IOptions<MedicineDistributorDatabaseSettings> medicineDistributorDatabaseSettings)
         {
             var mongoClient = new MongoClient(
