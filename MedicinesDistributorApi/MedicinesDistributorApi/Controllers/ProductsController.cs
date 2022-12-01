@@ -1,11 +1,13 @@
 using MedicinesDistributorApi.Business.IBusiness;
 using MedicinesDistributorApi.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicinesDistributorApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly ILogger<ProductsController> _logger;

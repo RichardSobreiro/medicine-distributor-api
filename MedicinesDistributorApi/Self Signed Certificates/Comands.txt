@@ -1,0 +1,23 @@
+- Creating a Private Key
+winpty openssl genrsa -des3 -out domain.key 2048
+
+- Creating a Certificate Signing Request
+winpty openssl req -key domain.key -new -out domain.csr
+
+- Create a Self-Signed Root CA
+winpty openssl req -x509 -sha256 -days 1825 -newkey rsa:2048 -keyout rootCA.key -out rootCA.crt
+
+- Sign our CSR (domain.csr) with the root CA certificate and its private key:
+winpty openssl x509 -req -CA rootCA.crt -CAkey rootCA.key -in domain.csr -out domain.crt -days 365 -CAcreateserial -extfile domain.ext
+
+- View Certificates
+winpty openssl x509 -text -noout -in domain.crt
+
+ssh -i domain.crt labuser@eastus2-vm-meddist-keycloak.eastus2.cloudapp.azure.com
+
+winpty openssl rsa -inform der -in domain.key -outform pem -out filekey.pem
+
+ssh -i /c/Users/richa/.ssh/id_rsa_ssh2.pub labuser@eastus2-vm-meddist-keycloak.eastus2.cloudapp.azure.com
+ssh -i domain.pem labuser@eastus2-vm-meddist-keycloak.eastus2.cloudapp.azure.com
+
+ssh-keygen -e -f /c/Users/richa/.ssh/id_rsa.pub > /c/Users/richa/.ssh/id_rsa_ssh2.pub

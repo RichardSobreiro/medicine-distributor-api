@@ -1,10 +1,12 @@
 ﻿using MedicinesDistributorApi.Business.IBusiness;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicinesDistributorApi.Controllers
 {
     [ApiController]
     [Route("api/measurement-units")]
+    [Authorize]
     public class MeasurementUnitsController : ControllerBase
     {
         private readonly ILogger<MeasurementUnitsController> _logger;

@@ -1,8 +1,10 @@
+using Keycloak.AuthServices.Authentication;
 using MedicinesDistributorApi.Business;
 using MedicinesDistributorApi.Business.IBusiness;
 using MedicinesDistributorApi.Repository;
 using MedicinesDistributorApi.Repository.DatabaseSettings;
 using MedicinesDistributorApi.Repository.IRepository;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +24,31 @@ builder.Services.Configure<MedicineDistributorDatabaseSettings>(
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                          {
+                              Reference = new OpenApiReference
+                              {
+                                  Type = ReferenceType.SecurityScheme,
+                                  Id = "Bearer"
+                              }
+                          },
+                         new string[] {}
+                    }
+                });
+});
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IProductsBusiness, ProductsBusiness>();
@@ -30,6 +56,8 @@ builder.Services.AddScoped<IMeasurementUnitsBusiness, MeasurementUnitsBusiness>(
 
 builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<IMeasurementUnitsRepository, MeasurementUnitsRepository>();
+
+builder.Services.AddKeycloakAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -44,6 +72,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowSites");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
