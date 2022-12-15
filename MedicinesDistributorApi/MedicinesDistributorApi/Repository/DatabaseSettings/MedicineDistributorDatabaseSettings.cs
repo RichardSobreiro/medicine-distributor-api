@@ -8,5 +8,6 @@
 
         public string ProductsCollectionName { get; set; } = null!;
         public string MeasurementUnitsCollectionName { get; set; } = null!;
+        public string PaymentsCollectionName { get; set; } = null!;
     }
 }

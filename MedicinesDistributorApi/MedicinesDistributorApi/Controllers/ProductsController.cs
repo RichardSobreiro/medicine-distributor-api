@@ -39,6 +39,7 @@ namespace MedicinesDistributorApi.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll([FromQuery] string? partialName)
         {
             if(string.IsNullOrEmpty(partialName))

@@ -4,6 +4,8 @@ using MedicinesDistributorApi.Business.IBusiness;
 using MedicinesDistributorApi.Repository;
 using MedicinesDistributorApi.Repository.DatabaseSettings;
 using MedicinesDistributorApi.Repository.IRepository;
+using MedicinesDistributorApi.Repository.IRepository.IPagSeguro;
+using MedicinesDistributorApi.Repository.PagSeguro;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("https://localhost:7226").AllowAnyHeader().AllowAnyMethod();
+            policy.WithOrigins("https://localhost:7007").AllowAnyHeader().AllowAnyMethod();
         });
 });
 
@@ -53,9 +56,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IProductsBusiness, ProductsBusiness>();
 builder.Services.AddScoped<IMeasurementUnitsBusiness, MeasurementUnitsBusiness>();
+builder.Services.AddScoped<IPaymentsBusiness, PaymentsBusiness>();
 
 builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<IMeasurementUnitsRepository, MeasurementUnitsRepository>();
+builder.Services.AddScoped<IPaymentsRepository, PaymentsRepository>();
+builder.Services.AddScoped<IPaymentsPagSeguroRepository, PaymentsPagSeguroRepository>();
 
 builder.Services.AddKeycloakAuthentication(builder.Configuration);
 

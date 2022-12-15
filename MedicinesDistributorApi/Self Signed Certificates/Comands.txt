@@ -23,8 +23,5 @@ ssh -i domain.pem labuser@eastus2-vm-meddist-keycloak.eastus2.cloudapp.azure.com
 ssh-keygen -e -f /c/Users/richa/.ssh/id_rsa.pub > /c/Users/richa/.ssh/id_rsa_ssh2.pub
 
 frame-ancestors 'self';
-
+Match="NavLinkMatch.All"
 X-Frame-Options : SAMEORIGIN
-
-https://keycloak.sobreiro.dev/auth/realms/medical-distributor/protocol/openid-connect/auth?client_id=medical-distributor-management-ui&
-redirect_uri=https%3A%2F%2Flocalhost%3A7226%2Fauthentication%2Flogin-callback&response_type=code&scope=openid%20profile%20roles&state=e08e6d0d13d84f029830c61b45d03202&code_challenge=TSVtMJ8t0YnWcXZD6kXj0Uh9qMkBodj0yzp4T7381K0&code_challenge_method=S256&prompt=none&response_mode=query
