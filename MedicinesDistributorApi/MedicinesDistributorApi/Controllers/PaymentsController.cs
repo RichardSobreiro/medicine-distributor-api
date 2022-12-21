@@ -7,7 +7,7 @@ namespace MedicinesDistributorApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class PaymentsController : ControllerBase
     {
         private readonly ILogger<ProductsController> _logger;
