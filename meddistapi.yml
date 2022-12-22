@@ -1,5 +1,5 @@
 version: 3
 services:
   keycloak:
-    image: richardsobreiro/medicine-distributor-api
+    image: richardsobreiro/medicine-distributor-api:latest
     restart: always
