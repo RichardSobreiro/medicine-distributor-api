@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine as build
 WORKDIR /app
 
-ENV DOTNET_URLS=http://+:80
+ENV DOTNET_URLS=http://+:8080
 
 COPY . .
 RUN dotnet restore
