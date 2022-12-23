@@ -3,4 +3,4 @@ AzureDevOpsRichardSobreiroSubscription = 3j_8Q~Z8iv62vp-oieCubQ2tOL_DAjmR4uBlLaP
 -----------------------------------------------------------------------------------------------------------------------------
 COMANDOS BUILD IMAGEM:
 docker build . -t meddistapi
-docker run --name meddistapi -p 8091:80 -d meddistapi --net medicine-distributor-api_default
+docker run --name meddistapi -p 8091:8080 -d meddistapi --net medicine-distributor-api_default
