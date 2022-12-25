@@ -15,14 +15,16 @@ namespace MedicinesDistributorApi.Business
         private readonly IPaymentsRepository _paymentsRepository;
         private readonly IConfiguration _configuration;
         private readonly IPaymentsPagSeguroRepository _paymentsPagSeguroRepository;
+        private readonly IMeasurementUnitsRepository _measurementUnitsRepository;
 
         public PaymentsBusiness(IConfiguration configuration, IMapper mapper, IPaymentsRepository paymentsRepository,
-            IPaymentsPagSeguroRepository paymentsPagSeguroRepository)
+            IPaymentsPagSeguroRepository paymentsPagSeguroRepository, IMeasurementUnitsRepository measurementUnitsRepository)
         {
             _mapper = mapper;
             _paymentsRepository = paymentsRepository;
             _configuration = configuration;
             _paymentsPagSeguroRepository = paymentsPagSeguroRepository;
+            _measurementUnitsRepository = measurementUnitsRepository;   
         }
 
         public async Task<PaymentDto> CreateNewPayment(PaymentDto paymentDto)
@@ -35,13 +37,16 @@ namespace MedicinesDistributorApi.Business
                 BoletoRequest boletoRequest = CreateBoletoRequest(payment);
                 BoletoResponse boletoResponse = await _paymentsPagSeguroRepository.CreatePayment(boletoRequest);
                 payment.BoletoResponse = boletoResponse;
-                payment.Status = GetPaymentStatus(boletoResponse);
+                payment.Status = GetPaymentStatusFromBoletoResponse(boletoResponse);
                 await _paymentsRepository.UpdateAsync(payment.Id, payment);
                 var paymentResponseDto = _mapper.Map<Payment, PaymentDto>(payment);
-                BoletoResponse.Link? link = payment.BoletoResponse.links.FirstOrDefault(l => l.media == "application/pdf");
-                if(link != null)
+                if(payment.Status != PaymentStatus.ERROR)
                 {
-                    paymentResponseDto.BoletoResponse.Boleto.link = link.href;
+                    BoletoResponse.Link? link = payment.BoletoResponse.links.FirstOrDefault(l => l.media == "application/pdf");
+                    if(link != null)
+                    {
+                        paymentResponseDto.BoletoResponse.Boleto.link = link.href;
+                    }
                 }
                 return paymentResponseDto;
             }
@@ -58,7 +63,8 @@ namespace MedicinesDistributorApi.Business
             boletoRequest.description = "Compra de Materiais/Medicamentos";
             boletoRequest.amount = new BoletoRequest.Amount()
             {
-                value = payment.ShoppingCart.ProductsInCart.Sum(p => p.Concentrations.Sum(c => c.SellingPrice)),
+                value = payment.ShoppingCart.ProductsInCart.Sum(p => 
+                    p.Concentrations.Any() ? p.Concentrations.Sum(c => c.SellingPrice * c.Quantity) : p.SellingPrice * p.Quantity),
                 currency = "BRL"
             };
             boletoRequest.payment_method = new BoletoRequest.PaymentMethod()
@@ -97,7 +103,7 @@ namespace MedicinesDistributorApi.Business
             return boletoRequest;
         }
 
-        string GetPaymentStatus(BoletoResponse boletoResponse)
+        string GetPaymentStatusFromBoletoResponse(BoletoResponse boletoResponse)
         {
             if(boletoResponse.status.Contains("WAITING", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -105,7 +111,43 @@ namespace MedicinesDistributorApi.Business
             }
             else
             {
-                return PaymentStatus.WAITING;
+                return PaymentStatus.ERROR;
+            }
+        }
+
+        public async Task<PaymentDto> GetPaymentByIdAsync(string id)
+        {
+            try
+            {
+                var payment = await _paymentsRepository.GetAsync(id);
+                if(payment != null)
+                {
+                    foreach (var product in payment.ShoppingCart.ProductsInCart)
+                    {
+                        if(product.Concentrations.Any())
+                        {
+                            var measurementUnit = await _measurementUnitsRepository.GetAsync(product.MeasurementUnitId);
+                            if (measurementUnit != null)
+                            {
+                                foreach (var concentration in product.Concentrations)
+                                {
+                                    concentration.ConcentrationDescription =
+                                        $"{concentration.ConcentrationValue} {measurementUnit.MeasurementUnitDescription}";
+                                }
+                            }
+                        }
+                    }
+                    var paymentDto = _mapper.Map<Payment, PaymentDto>(payment);
+                    return paymentDto;
+                }
+                else
+                {
+                    throw new Exception("Pagamento não encontrato");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

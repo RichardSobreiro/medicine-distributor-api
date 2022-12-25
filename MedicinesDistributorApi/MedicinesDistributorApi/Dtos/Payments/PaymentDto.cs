@@ -4,6 +4,8 @@ namespace MedicinesDistributorApi.Dtos.Payments
 {
     public class PaymentDto
     {
+        public string UserEmail { get; set; } = string.Empty;
+
         public string CpfCnpj { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;

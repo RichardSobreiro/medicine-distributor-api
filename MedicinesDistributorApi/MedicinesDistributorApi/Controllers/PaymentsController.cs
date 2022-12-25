@@ -24,5 +24,12 @@ namespace MedicinesDistributorApi.Controllers
         {
             return Created("api/payments", await _paymentsBusiness.CreateNewPayment(paymentDto));
         }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            return Ok(await _paymentsBusiness.Get(id));
+        }
     }
 }
