@@ -7,5 +7,8 @@
         public string Description { get; set; } = "";
         public string? MeasurementUnitId { get; set; }
         public List<ConcentrationDto> SelectedDrugsConcentrations { get; set; } = new();
+        public decimal PurchasePrice { get; set; }
+        public decimal SellingPrice { get; set; }
+        public int TotalStockQuantity { get; set; }
     }
 }
