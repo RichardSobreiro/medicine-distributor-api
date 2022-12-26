@@ -10,7 +10,7 @@
 
         public class Amount
         {
-            public decimal value { get; set; } = 0;
+            public int value { get; set; } = 0;
             public string currency { get; set; } = "BRL";
         }
         public class PaymentMethod 
@@ -20,7 +20,7 @@
         }
         public class Boleto
         {
-            public DateTime due_date { get; set; }
+            public string due_date { get; set; } = string.Empty;
             public InstructionLines instruction_lines { get; set; } = new();
             public Holder holder { get; set; } = new();
         }

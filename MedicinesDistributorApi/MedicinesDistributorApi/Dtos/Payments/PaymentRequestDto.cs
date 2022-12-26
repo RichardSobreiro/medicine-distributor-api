@@ -1,31 +1,24 @@
-﻿using MedicinesDistributorApi.PagSeguro;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MedicinesDistributorApi.Dtos.Payments.PagSeguro;
 
-namespace MedicinesDistributorApi.Models.Payments
+namespace MedicinesDistributorApi.Dtos.Payments
 {
-    [BsonIgnoreExtraElements]
-    public class Payment
+    public class PaymentRequestDto
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
         public string UserEmail { get; set; } = string.Empty;
+
         public string CpfCnpj { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public bool BillingEqualShippingAddress { get; set; } = true;
-        public ShoppingCartModel ShoppingCart { get; set; } = new();
-        public Address BillingAddress { get; set; } = new();
-        public Address ShippimentAddress { get; set; } = new();
+        public ShoppingCartDto ShoppingCart { get; set; } = new();
+        public AddressDto BillingAddress { get; set; } = new();
+        public AddressDto ShippimentAddress { get; set; } = new();
         public bool Boleto { get; set; } = true;
         public bool Pix { get; set; } = false;
         public bool CreditCard { get; set; } = false;
         public DateTime DueDate { get; set; }
-        public string Status { get; set; } = string.Empty;
-        public BoletoResponse BoletoResponse { get; set; } = new();
 
-        public class Address
+        public class AddressDto
         {
             public string Cep { get; set; } = string.Empty;
             public string Street { get; set; } = string.Empty;
@@ -35,22 +28,22 @@ namespace MedicinesDistributorApi.Models.Payments
             public string State { get; set; } = string.Empty;
             public string Number { get; set; } = string.Empty;
         }
-        public class ShoppingCartModel
+        public class ShoppingCartDto
         {
             public string ShoppingCartId { get; set; } = "";
-            public List<ProductInCart> ProductsInCart { get; set; } = new();
+            public List<ProductInCartDto> ProductsInCart { get; set; } = new();
         }
-        public class ProductInCart
+        public class ProductInCartDto
         {
             public string? Id { get; set; } = "";
             public string Name { get; set; } = "";
             public string Description { get; set; } = "";
             public string? MeasurementUnitId { get; set; }
-            public List<ConcentrationInCart> Concentrations { get; set; } = new();
+            public List<ConcentrationInCartDto> Concentrations { get; set; } = new();
             public decimal SellingPrice { get; set; }
             public int Quantity { get; set; }
         }
-        public class ConcentrationInCart
+        public class ConcentrationInCartDto
         {
             public double ConcentrationValue { get; set; }
             public string ConcentrationDescription { get; set; } = "";

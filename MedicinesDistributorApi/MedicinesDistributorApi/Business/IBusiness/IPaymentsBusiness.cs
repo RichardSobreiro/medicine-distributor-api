@@ -4,6 +4,8 @@ namespace MedicinesDistributorApi.Business.IBusiness
 {
     public interface IPaymentsBusiness
     {
-        Task<PaymentDto> CreateNewPayment(PaymentDto paymentDto);
+        Task<PaymentResponseDto> CreateNewPayment(PaymentRequestDto paymentDto);
+        Task<PaymentResponseDto> GetPaymentByIdAsync(string id);
+        Task<List<PaymentResponseDto>> GetPaymentByUserEmailAsync(string userEmail);
     }
 }

@@ -2,8 +2,9 @@
 
 namespace MedicinesDistributorApi.Dtos.Payments
 {
-    public class PaymentDto
+    public class PaymentResponseDto
     {
+        public string? Id { get; set; }
         public string UserEmail { get; set; } = string.Empty;
 
         public string CpfCnpj { get; set; } = string.Empty;
@@ -42,6 +43,8 @@ namespace MedicinesDistributorApi.Dtos.Payments
             public string Description { get; set; } = "";
             public string? MeasurementUnitId { get; set; }
             public List<ConcentrationInCartDto> Concentrations { get; set; } = new();
+            public decimal SellingPrice { get; set; }
+            public int Quantity { get; set; }
         }
         public class ConcentrationInCartDto
         {

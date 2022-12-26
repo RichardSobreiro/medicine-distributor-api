@@ -41,7 +41,7 @@ namespace MedicinesDistributorApi.Repository
 
         public async Task<List<Payment>> GetByEmailAsync(string email)
         {
-            var filter = Builders<Payment>.Filter.Regex("Name", new BsonRegularExpression($"/.*{email}.*/mi"));
+            var filter = Builders<Payment>.Filter.Regex("UserEmail", new BsonRegularExpression($"/.*{email}.*/mi"));
             return await _paymentsCollection.Find(filter).ToListAsync();
         }
 

@@ -20,7 +20,7 @@ namespace MedicinesDistributorApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] PaymentDto paymentDto)
+        public async Task<IActionResult> Post([FromBody] PaymentRequestDto paymentDto)
         {
             return Created("api/payments", await _paymentsBusiness.CreateNewPayment(paymentDto));
         }
@@ -29,7 +29,14 @@ namespace MedicinesDistributorApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            return Ok(await _paymentsBusiness.Get(id));
+            return Ok(await _paymentsBusiness.GetPaymentByIdAsync(id));
+        }
+
+        [HttpGet]
+        [Route("boleto/{userEmail}")]
+        public async Task<IActionResult> GetByUserEmail(string userEmail)
+        {
+            return Ok(await _paymentsBusiness.GetPaymentByUserEmailAsync(userEmail));
         }
     }
 }
