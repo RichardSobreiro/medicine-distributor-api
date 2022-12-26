@@ -53,6 +53,7 @@ builder.Services.AddSwaggerGen(c =>
                          new string[] {}
                     }
                 });
+    c.CustomSchemaIds(type => type.ToString());
 });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

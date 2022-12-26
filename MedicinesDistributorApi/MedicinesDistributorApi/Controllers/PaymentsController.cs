@@ -19,12 +19,14 @@ namespace MedicinesDistributorApi.Controllers
             _paymentsBusiness = paymentsBusiness;
         }
 
+        [ProducesResponseType(typeof(PaymentResponseDto), StatusCodes.Status201Created)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PaymentRequestDto paymentDto)
         {
             return Created("api/payments", await _paymentsBusiness.CreateNewPayment(paymentDto));
         }
 
+        [ProducesResponseType(typeof(PaymentResponseDto), StatusCodes.Status200OK)]
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetById(string id)
@@ -32,6 +34,7 @@ namespace MedicinesDistributorApi.Controllers
             return Ok(await _paymentsBusiness.GetPaymentByIdAsync(id));
         }
 
+        [ProducesResponseType(typeof(List<PaymentResponseDto>), StatusCodes.Status200OK)]
         [HttpGet]
         [Route("boleto/{userEmail}")]
         public async Task<IActionResult> GetByUserEmail(string userEmail)
