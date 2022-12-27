@@ -6,6 +6,7 @@ using MedicinesDistributorApi.Models.Payments;
 using MedicinesDistributorApi.PagSeguro;
 using MedicinesDistributorApi.Repository.IRepository;
 using MedicinesDistributorApi.Repository.IRepository.IPagSeguro;
+using MedicinesDistributorApi.Utils.Extensions;
 
 namespace MedicinesDistributorApi.Business
 {
@@ -74,6 +75,8 @@ namespace MedicinesDistributorApi.Business
                     p.Concentrations.Any() ? p.Concentrations.Sum(c => c.SellingPrice * c.Quantity) : p.SellingPrice * p.Quantity),
                 currency = "BRL"
             };
+            boletoRequest.amount.value *= 100;
+            List<char> charsToRemove = new List<char>() { '@', '_', ',', '.', '/', '-' };
             boletoRequest.payment_method = new BoletoRequest.PaymentMethod()
             {
                 type = "BOLETO",
@@ -88,7 +91,7 @@ namespace MedicinesDistributorApi.Business
                     holder = new BoletoRequest.Holder()
                     {
                         name = payment.Name,
-                        tax_id = payment.CpfCnpj,
+                        tax_id = payment.CpfCnpj.Filter(charsToRemove),
                         email = payment.Email,
                         address = new BoletoRequest.Address()
                         {
@@ -99,7 +102,7 @@ namespace MedicinesDistributorApi.Business
                             region = payment.BillingAddress.State,
                             region_code = payment.BillingAddress.State,
                             country = "Brasil",
-                            postal_code = payment.BillingAddress.Cep
+                            postal_code = payment.BillingAddress.Cep.Filter(charsToRemove)
                         }
                     }
                 }

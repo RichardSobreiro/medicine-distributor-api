@@ -15,10 +15,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "AllowSites",
         policy =>
         {
-            policy.WithOrigins("https://localhost:7226").AllowAnyHeader().AllowAnyMethod();
-            policy.WithOrigins("https://localhost:7007").AllowAnyHeader().AllowAnyMethod();
-            policy.WithOrigins("https://mgm-ui.sobreiro.dev").AllowAnyHeader().AllowAnyMethod();
-            policy.WithOrigins("https://meddist.sobreiro.dev").AllowAnyHeader().AllowAnyMethod();
+            policy.WithOrigins("https://localhost:7226", "https://localhost:7007",
+                    "https://mgm-ui.sobreiro.dev", "https://meddist.sobreiro.dev").
+                AllowAnyHeader().
+                AllowAnyMethod();
         });
 });
 
