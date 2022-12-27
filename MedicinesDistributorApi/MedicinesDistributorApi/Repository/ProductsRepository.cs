@@ -42,7 +42,7 @@ namespace MedicinesDistributorApi.Repository
 
         public async Task<List<Product>> GetAsync()
         {
-            return await _productsCollection.Find(_ => true).ToListAsync();
+            return await _productsCollection.Find(_ => true).Limit(18).ToListAsync();
         }
 
         public async Task RemoveAsync(string id)
